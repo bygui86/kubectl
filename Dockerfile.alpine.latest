@@ -3,16 +3,13 @@
 # alpine:3.13.5
 FROM alpine@sha256:827525365ff718681b0688621e09912af49a17611701ee4d421ba50d57c13f7e
 
-# args
-ARG KUBECTL_VERSION=v1.21.0
-
 # install packages
 RUN apk update --no-cache && \
 	apk add --no-cache ca-certificates curl bash && \
 	rm -rf /var/cache/apk/*
 
 # install kubectl
-RUN curl -sLO https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl && \
+RUN curl -sLO "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
 	mv kubectl /usr/bin/kubectl && \
 	chmod +x /usr/bin/kubectl
 
