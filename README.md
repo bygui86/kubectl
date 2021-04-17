@@ -6,25 +6,25 @@ Small container image with only `kubectl` installed
 ## Build
 
 ```bash
-make container-build
+make container-build CONTAINER_TAG=dev
 
-make container-build-alpine
+make container-build-alpine CONTAINER_TAG=dev
 ```
 
 ## Push
 
 ```bash
-make container-push
+make container-push CONTAINER_TAG=dev
 
-make container-push-alpine
+make container-push-alpine CONTAINER_TAG=dev
 ```
 
 ## Run
 
 ```bash
-make container-run
+make container-run CONTAINER_TAG=dev
 
-make container-run-alpine
+make container-run-alpine CONTAINER_TAG=dev
 ```
 
 ## Exec
