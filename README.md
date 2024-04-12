@@ -1,44 +1,38 @@
 
 # kubectl
 
-Small container image with only `kubectl` installed
+Small container image with only `kubectl` installed.
 
 ## Build
 
 ```bash
-make build
+task build-latest
+
+task build-specific KUBECTL_VERSION=v1.28.4
 ```
 
 ## Push
 
 ```bash
-make push
+task push-latest
+
+task push-specific KUBECTL_VERSION=v1.28.4
 ```
 
-## Run
+## Build & Push
 
 ```bash
-# debian
-make run CONTAINER_TAG=v1.20.6
-# alpine
-make run CONTAINER_TAG=v1.20.6-alpine
-```
+task build-push-latest
 
-## Exec
-
-```bash
-make exec
-```
-
-## Stop
-
-```bash
-make stop
+task build-push-specific KUBECTL_VERSION=v1.28.4
 ```
 
 ## Links
 
+- https://hub.docker.com/r/bygui86/kubectl
+- https://taskfile.dev/
 - https://hub.docker.com/_/debian
 - https://hub.docker.com/_/alpine
-- https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+- https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-binary-with-curl-on-linux
+- https://kubernetes.io/releases/
 - https://github.com/alpine-docker/k8s/blob/master/Dockerfile

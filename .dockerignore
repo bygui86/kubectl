@@ -1,6 +1,6 @@
 .git
 .gitignore
-.gitmodules
-
 LICENSE
-*.md
+README.md
+Taskfile.yaml
+
