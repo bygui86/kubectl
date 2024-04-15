@@ -1,29 +1,27 @@
 
 # kubectl
 
+## Description
+
 Small container image with only `kubectl` installed.
 
-## Build
+Container image bases:
+- `debian`
+- `alpine`
+
+## Commands
 
 ```bash
+# build
 task build-latest
-
 task build-specific KUBECTL_VERSION=v1.28.4
-```
 
-## Push
-
-```bash
+# push
 task push-latest
-
 task push-specific KUBECTL_VERSION=v1.28.4
-```
 
-## Build & Push
-
-```bash
+# build + push
 task build-push-latest
-
 task build-push-specific KUBECTL_VERSION=v1.28.4
 ```
 

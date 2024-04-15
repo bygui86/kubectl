@@ -1,18 +1,22 @@
 
 # base image
-## 12.5-slim/bookworm-slim
+## 12.5-slim/bookworm-slim - amd64
 FROM debian:12.5-slim@sha256:3d5df92588469a4c503adbead0e4129ef3f88e223954011c2169073897547cac
 
 # args
 ARG KUBECTL_VERSION
 
 # install packages
-RUN apt-get update -y && \
-	apt-get upgrade -y && \
-	apt-get install -y ca-certificates curl && \
+RUN apt-get update -qqy && \
+	apt-get upgrade -qqy && \
+	apt-get install -qqy \
+		ca-certificates \
+		curl && \
+	apt-get autoclean && \
 	rm -rf /var/lib/apt/lists/*
 
 # install kubectl
+# https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-binary-with-curl-on-linux
 RUN curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && \
 	curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl.sha256" && \
 	echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check && \
@@ -25,7 +29,7 @@ WORKDIR /usr/local/bin
 # set user
 USER 1001
 
-# entrypoint
+# run
 # ENTRYPOINT ["/bin/sh", "-c", "while :; do echo 'going to sleep for an hour, see ya later...'; sleep 3600; done"]
 ENTRYPOINT "kubectl"
 CMD "help"
