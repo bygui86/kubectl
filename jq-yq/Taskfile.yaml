@@ -1,0 +1,108 @@
+version: '3'
+
+tasks:
+
+  # BUILD
+
+  build-debian:
+    desc: Build kubectl (debian) with specific version
+    requires:
+      vars: [ KUBECTL_VERSION ]
+    cmds:
+      - docker buildx build . -f debian.Dockerfile -t bygui86/kubectl-jq-yq:{{.KUBECTL_VERSION}} --build-arg KUBECTL_VERSION={{.KUBECTL_VERSION}} --platform linux/amd64,linux/arm64
+      - docker buildx build . -f debian.Dockerfile -t bygui86/kubectl-jq-yq:{{.KUBECTL_VERSION}} --build-arg KUBECTL_VERSION={{.KUBECTL_VERSION}} --load
+
+  build-alpine:
+    desc: Build kubectl (alpine) with specific version
+    requires:
+      vars: [ KUBECTL_VERSION ]
+    cmds:
+      - docker buildx build . -f alpine.Dockerfile -t bygui86/kubectl-jq-yq:{{.KUBECTL_VERSION}}-alpine --build-arg KUBECTL_VERSION={{.KUBECTL_VERSION}} --platform linux/amd64,linux/arm64
+      - docker buildx build . -f alpine.Dockerfile -t bygui86/kubectl-jq-yq:{{.KUBECTL_VERSION}}-alpine --build-arg KUBECTL_VERSION={{.KUBECTL_VERSION}} --load
+
+  build-specific:
+    desc: Build kubectl (all) with specific version
+    requires:
+      vars: [ KUBECTL_VERSION ]
+    cmds:
+      # INFO: env vars with same name are passed automatically
+      - task: build-debian
+      - task: build-alpine
+
+  build-latest:
+    desc: Build kubectl (all) with latest version
+    cmds:
+      - task: build-debian
+        vars:
+          KUBECTL_VERSION: $(curl -L -s https://dl.k8s.io/release/stable.txt)
+      - task: build-alpine
+        vars:
+          KUBECTL_VERSION: $(curl -L -s https://dl.k8s.io/release/stable.txt)
+
+  # PUSH
+
+  push-debian:
+    desc: Push kubectl (debian) with specific version to container registry
+    requires:
+      vars: [ KUBECTL_VERSION ]
+    cmds:
+      - docker push bygui86/kubectl-jq-yq:{{.KUBECTL_VERSION}}
+
+  push-alpine:
+    desc: Push kubectl (alpine) with specific version to container registry
+    requires:
+      vars: [ KUBECTL_VERSION ]
+    cmds:
+      - docker push bygui86/kubectl-jq-yq:{{.KUBECTL_VERSION}}-alpine
+
+  push-specific:
+    desc: Push kubectl (all) with specific version to container registry
+    requires:
+      vars: [ KUBECTL_VERSION ]
+    cmds:
+      - task: push-debian
+      - task: push-alpine
+
+  push-latest:
+    desc: Push kubectl (all) with latest version to container registry
+    cmds:
+      - task: push-debian
+        vars:
+          KUBECTL_VERSION: $(curl -L -s https://dl.k8s.io/release/stable.txt)
+      - task: push-alpine
+        vars:
+          KUBECTL_VERSION: $(curl -L -s https://dl.k8s.io/release/stable.txt)
+
+  # BUILD + PUSH
+
+  build-push-debian:
+    desc: Build & push kubectl (debian) with specific version
+    requires:
+      vars: [ KUBECTL_VERSION ]
+    cmds:
+      - docker buildx build . -f debian.Dockerfile -t bygui86/kubectl-jq-yq:{{.KUBECTL_VERSION}} --build-arg KUBECTL_VERSION={{.KUBECTL_VERSION}} --platform linux/amd64,linux/arm64 --push
+
+  build-push-alpine:
+    desc: Build & push kubectl (alpine) with specific version
+    requires:
+      vars: [ KUBECTL_VERSION ]
+    cmds:
+      - docker buildx build . -f alpine.Dockerfile -t bygui86/kubectl-jq-yq:{{.KUBECTL_VERSION}}-alpine --build-arg KUBECTL_VERSION={{.KUBECTL_VERSION}} --platform linux/amd64,linux/arm64 --push
+
+  build-push-specific:
+    desc: Build & push kubectl (all) with specific version
+    requires:
+      vars: [ KUBECTL_VERSION ]
+    cmds:
+      - task: build-push-debian
+      - task: build-push-alpine
+
+  build-push-latest:
+    desc: Build & push kubectl (all) with latest version
+    cmds:
+      - task: build-push-debian
+        vars:
+          KUBECTL_VERSION: $(curl -L -s https://dl.k8s.io/release/stable.txt)
+      - task: build-push-alpine
+        vars:
+          KUBECTL_VERSION: $(curl -L -s https://dl.k8s.io/release/stable.txt)
